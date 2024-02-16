@@ -59,27 +59,11 @@
 
 ;; Disable line numbers for some modes
 (dolist (mode '(
-                ;; org-mode-hook
                 term-mode-hook
                 eshell-mode-hook
                 shell-mode-hook
                 ))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
-
-;; Enable some settings automagically when entering org-mode
-(defun my-org-mode-hook ()
-  ;; "Custom Emacs Lisp function for `org-mode' hook."
-  (variable-pitch-mode 1)                 ; Enable variable-pitch-mode
-  ;; (visual-line-mode 1)                  ; Enable visual-line mode for line wrapping
-  ;; (visual-fill-column-mode 1)           ; Enable visual-fill-column-mode for centered text
-  ;;(text-scale-mode 0)                   ; Reset text scale to default
-  ;;(text-align-mode 1)                   ; Enable text alignment
-  (display-line-numbers-mode 0)         ; Hide line numbers
-  (setq visual-fill-column-center-text t)
-  ;; (org-align-tags)                      ; Auto-align tags
-  ;; (org-indent-mode)                      ; Auto-align tags
-  )
-(add-hook 'org-mode-hook 'my-org-mode-hook)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -139,8 +123,15 @@
 
 ;; ORGMODE CONFIG
 
-(after! org
+(defun efs/org-mode-setup ()
+  (display-line-numbers-mode 0)
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
 
+(use-package! org
+  :hook (org-mode . efs/org-mode-setup)
+  :config
   ;; Org config
   (setq org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●"))
   (setq org-src-preserve-indentation t)
@@ -148,7 +139,7 @@
   (setq org-highlight-links '(bracket angle plain tag date footnote))
   (setq org-ellipsis " ▾")
   (setq org-hide-emphasis-markers t)
-  (setq org-indent-mode t)
+  ;; (setq org-indent-mode t)
   (setq org-hide-leading-stars t)
 
   ;; Org Agenda config
@@ -172,6 +163,7 @@
           ("knitting" . ?k)
           ("maintenance" . ?m)
           ("note" . ?n)
+          ("noexport" .?N)
           ("personal" . ?p)
           ("recipe" . ?r)
           ("TOC" . ?T)
@@ -265,6 +257,18 @@
   ;;         ("work-dashboard" :components("org-work-files" "org-work-assets" "org-presentation-files" "org-presentation-assets"))))
 )
 
+;; VISUAL-FILL
+;;Center org buffers
+
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package! visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
+
+
 ;;HL-TODO
 
 (after! hl-todo
@@ -281,11 +285,21 @@
 
 ;; LATEX
 (after! ox-latex
+  (setq org-latex-src-block-backend 'minted)
+  ;; (setq org-latex-minted-options
+  ;;       '(("linenos" "true")
+  ;;         ("bgcolor" "bg")
+  ;;         ("breaklines" "true")
+  ;;         ("frame" "lines")
+  ;;         ("framesep" "2mm")
+  ;;         ("baselinestretch" "1.2")
+  ;;         ("fontsize" "\\footnotesize")))
+
   (setq org-latex-pdf-process
-        '("pdflatex -interaction nonstopmode -output-directory %o %f"
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
           "bibtex %b"
-          "pdflatex -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -interaction nonstopmode -output-directory %o %f"))
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
   ;; (setq org-latex-with-hyperref nil) ;; was used before, now deprecated
   (setq org-latex-hyperref-template nil) ;; stop adding hypersetup{author..} to latex export
   ;; (setq org-latex-prefer-user-labels t)

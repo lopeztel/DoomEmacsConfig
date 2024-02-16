@@ -49,6 +49,4 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
-;;(package! org-modern)
-;;(package! svg-tag-mode)
-;;(package! org-appear)
+(package! visual-fill-column)
