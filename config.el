@@ -160,6 +160,7 @@
                                         ; Put mutually exclusive tags here
           (:endgroup)
           ("blog" . ?b)
+          ("computing" . ?c)
           ("exercise" . ?e)
           ("health" . ?h)
           ("knitting" . ?k)
