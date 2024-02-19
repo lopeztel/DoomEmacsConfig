@@ -80,6 +80,7 @@
         "~/org/work/Todos.org"
         "~/org/Agenda.org"
         "~/org/Birthdays.org"
+        "~/org/Habits.org"
         "~/org/Holidays.org"))
 ;; Windows
 ;; (setq org-agenda-files
@@ -87,6 +88,7 @@
 ;;         "~/Documents/org/work/Todos.org"
 ;;         "~/Documents/org/Agenda.org"
 ;;         "~/Documents/org/Birthdays.org"
+;;         "~/Documents/org/Habits.org"
 ;;         "~/Documents/org/Holidays.org"))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
@@ -256,6 +258,16 @@
   ;;          )
   ;;         ("work-dashboard" :components("org-work-files" "org-work-assets" "org-presentation-files" "org-presentation-assets"))))
 )
+
+;; ORG-HABIT
+(use-package! org-habit
+  :after org
+  :config
+  (setq org-habit-following-days 7
+        org-habit-preceding-days 25
+        org-habit-show-all-today t
+        org-habit-graph-column 40
+        org-habit-show-habits t))
 
 ;; VISUAL-FILL
 ;;Center org buffers
