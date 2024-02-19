@@ -139,7 +139,7 @@
   (setq org-highlight-links '(bracket angle plain tag date footnote))
   (setq org-ellipsis " ▾")
   (setq org-hide-emphasis-markers t)
-  ;; (setq org-indent-mode t)
+  (setq org-tags-column -77)
   (setq org-hide-leading-stars t)
 
   ;; Org Agenda config
