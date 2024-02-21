@@ -22,7 +22,7 @@
 ;; accept.
 ;; Linux
 (setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 18 :weight 'medium)
-      doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 20)
+      doom-variable-pitch-font (font-spec :family "SauceCodeProNerdFont" :size 20)
       doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
 ;; Windows
 ;; (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
