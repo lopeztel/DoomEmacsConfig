@@ -163,6 +163,7 @@
           ("computing" . ?c)
           ("exercise" . ?e)
           ("health" . ?h)
+          ("howto" . ?H)
           ("knitting" . ?k)
           ("maintenance" . ?m)
           ("note" . ?n)
@@ -297,6 +298,7 @@
         ("XXX" . "#B48EAD"))))
 
 ;; LATEX
+;; Some elements taken from: https://www.aidanscannell.com/post/org-mode-resume/
 (after! ox-latex
   (setq org-latex-src-block-backend 'minted)
   ;; (setq org-latex-minted-options
@@ -365,6 +367,50 @@
   ;; Use visual line motions even outside of visual-line-mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+
+;; ORG-ROAM
+;; some elements taken from: https://github.com/jethrokuan/dots/blob/master/.doom.d/config.el
+(use-package! org-roam
+  :init
+  (setq org-roam-directory (file-truename "~/org/secondBrain")
+        org-roam-database-connector 'sqlite-builtin
+        org-roam-db-gc-threshold most-positive-fixnum
+        org-id-link-to-org-use-id t)
+  :config
+  (org-roam-db-autosync-mode +1)
+  (set-popup-rules!
+    `((,(regexp-quote org-roam-buffer) ; persistent org-roam buffer
+       :side right :width .33 :height .5 :ttl nil :modeline nil :quit nil :slot 1)
+      ("^\\*org-roam: " ; node dedicated org-roam buffer
+       :side right :width .33 :height .5 :ttl nil :modeline nil :quit nil :slot 2)))
+  (add-hook 'org-roam-mode-hook #'turn-on-visual-line-mode)
+  (setq org-roam-capture-templates
+        '(("m" "main" plain "%?"
+           :if-new (file+head "main/${slug}.org"
+                              "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("h" "How-To" plain "%?"
+           :if-new
+           (file+head "howto/${slug}.org" "#+title: ${title}\n#+filetags: :howto:")
+           :immediate-finish t
+           :unnarrowed t)))
+  )
+
+        (use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 
 ;; KEYMAPPINGS
 (map! :leader

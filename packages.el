@@ -51,3 +51,5 @@
 
 (package! visual-fill-column)
 (package! gnuplot)
+(unpin! org-roam)
+(package! org-roam-ui)
