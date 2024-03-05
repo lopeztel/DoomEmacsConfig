@@ -309,7 +309,7 @@
   ;;         ("framesep" "2mm")
   ;;         ("baselinestretch" "1.2")
   ;;         ("fontsize" "\\footnotesize")))
-
+  (setq org-preview-latex-default-process 'imagemagick)
   (setq org-latex-pdf-process
         '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
           "bibtex %b"
@@ -397,7 +397,7 @@
            :unnarrowed t)))
   )
 
-        (use-package! websocket
+(use-package! websocket
     :after org-roam)
 
 (use-package! org-roam-ui
@@ -411,6 +411,8 @@
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
+
+(require 'org-roam-export)
 
 ;; KEYMAPPINGS
 (map! :leader
