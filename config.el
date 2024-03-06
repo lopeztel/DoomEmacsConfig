@@ -21,13 +21,13 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept.
 ;; Linux
-(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 18 :weight 'medium)
-      doom-variable-pitch-font (font-spec :family "SauceCodeProNerdFont" :size 20)
-      doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
+;; (setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 18 :weight 'medium)
+;;       doom-variable-pitch-font (font-spec :family "SauceCodeProNerdFont" :size 20)
+;;       doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
 ;; Windows
-;; (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
-;;       doom-variable-pitch-font (font-spec :family "FiraCode NF" :size 18)
-;;       doom-big-font (font-spec :family "FiraCode NF" :size 32))
+ (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
+       doom-variable-pitch-font (font-spec :family "SauceCodePro NF" :size 20 :weight 'regular)
+       doom-big-font (font-spec :family "FiraCode NF" :size 32))
 
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
@@ -37,13 +37,13 @@
 ;; Emacs transparency (compatible with wayland)
 ;; Taken from https://www.emacswiki.org/emacs/TransparentEmacs
 ;; Linux Wayland
-(set-frame-parameter nil 'alpha-background 85)
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+;; (set-frame-parameter nil 'alpha-background 85)
+;; (add-to-list 'default-frame-alist '(alpha-background . 85))
 ;; Windows & Linux X11
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
 ;;(set-frame-parameter (selected-frame) 'alpha <both>)
-;; (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
-;; (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+ (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
+ (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -68,13 +68,9 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 
-;; Linux
 (setq org-directory "~/org/")
-;; Windows
-;; (setq org-directory "~/Documents/org/")
 
 ;; Set org-agenda-files
-;; Linux
 (setq org-agenda-files
       '("~/org/Todos.org"
         "~/org/work/Todos.org"
@@ -82,14 +78,6 @@
         "~/org/Birthdays.org"
         "~/org/Habits.org"
         "~/org/Holidays.org"))
-;; Windows
-;; (setq org-agenda-files
-;;       '("~/Documents/org/Todos.org"
-;;         "~/Documents/org/work/Todos.org"
-;;         "~/Documents/org/Agenda.org"
-;;         "~/Documents/org/Birthdays.org"
-;;         "~/Documents/org/Habits.org"
-;;         "~/Documents/org/Holidays.org"))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -174,22 +162,14 @@
           ("work" . ?w)))
 
   ;; Org capture templates
-  ;; Linux
   (setq org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/work/Todos.org" "Captured todos")
            "* TODO %?\n  %i\n  %a")
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n  %i\n  %a")))
-  ;; Windows
-  ;; (setq org-capture-templates
-  ;;       '(("t" "Todo" entry (file+headline "~/Documents/org/work/Todos.org" "Captured todos")
-  ;;          "* TODO %?\n  %i\n  %a")
-  ;;         ("j" "Journal" entry (file+datetree "~/Documents/org/journal.org")
-  ;;          "* %?\nEntered on %U\n  %i\n  %a")))
 
   ;; Org Publishing
   (setq org-publish-use-timestamps-flag nil) ;;don't generate only when files change
-  ;; Linux
   (setq org-publish-project-alist
         '(("org-work-files"
            :base-directory "~/org/work/"
@@ -224,41 +204,6 @@
            :publishing-function org-publish-attachment
            )
           ("work-dashboard" :components("org-work-files" "org-work-assets" "org-presentation-files" "org-presentation-assets"))))
-  ;; Windows
-  ;; (setq org-publish-project-alist
-  ;;       '(("org-work-files"
-  ;;          :base-directory "~/Documents/org/work/"
-  ;;          :base-extension "org"
-  ;;          :publishing-directory "~/Documents/work-dashboard/"
-  ;;          :recursive t
-  ;;          :publishing-function org-html-publish-to-html
-  ;;          :headline-levels 4
-  ;;          :auto-preamble t
-  ;;          )
-  ;;         ("org-presentation-files"
-  ;;          :base-directory "~/Documents/org/work/Presentations/"
-  ;;          :base-extension "org"
-  ;;          :publishing-directory "~/Documents/work-dashboard/Presentations/"
-  ;;          :recursive t
-  ;;          :publishing-function org-html-publish-to-html
-  ;;          :headline-levels 4
-  ;;          :auto-preamble t
-  ;;          )
-  ;;         ("org-work-assets"
-  ;;          :base-directory "~/Documents/org/work/media/"
-  ;;          :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
-  ;;          :publishing-directory "~/Documents/work-dashboard/media/"
-  ;;          :recursive t
-  ;;          :publishing-function org-publish-attachment
-  ;;          )
-  ;;         ("org-presentation-assets"
-  ;;          :base-directory "~/Documents/org/work/Presentations/media/"
-  ;;          :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
-  ;;          :publishing-directory "~/Documents/work-dashboard/Presentations/media/"
-  ;;          :recursive t
-  ;;          :publishing-function org-publish-attachment
-  ;;          )
-  ;;         ("work-dashboard" :components("org-work-files" "org-work-assets" "org-presentation-files" "org-presentation-assets"))))
 )
 
 ;; ORG-HABIT
