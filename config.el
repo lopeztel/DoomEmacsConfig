@@ -21,13 +21,13 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept.
 ;; Linux
-;; (setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 18 :weight 'medium)
-;;       doom-variable-pitch-font (font-spec :family "SauceCodeProNerdFont" :size 20)
-;;       doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
+(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 18 :weight 'medium)
+      doom-variable-pitch-font (font-spec :family "SauceCodeProNerdFont" :size 20)
+      doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
 ;; Windows
- (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
-       doom-variable-pitch-font (font-spec :family "SauceCodePro NF" :size 20 :weight 'regular)
-       doom-big-font (font-spec :family "FiraCode NF" :size 32))
+ ; (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
+ ;       doom-variable-pitch-font (font-spec :family "SauceCodePro NF" :size 20 :weight 'regular)
+ ;       doom-big-font (font-spec :family "FiraCode NF" :size 32))
 
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
