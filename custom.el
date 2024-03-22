@@ -5,7 +5,14 @@
  ;; If there is more than one, they won't work right.
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-safe-remote-resources
-   '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'")))
+   '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
+
+;; CALENDAR SETTINGS
+ '(holiday-bahai-holidays nil)
+ '(holiday-hebrew-holidays nil)
+ '(holiday-islamic-holidays nil)
+ '(holiday-solar-holidays nil)
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
