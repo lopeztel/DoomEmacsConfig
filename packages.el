@@ -53,3 +53,6 @@
 (package! gnuplot)
 (unpin! org-roam)
 (package! org-roam-ui)
+(package! ob-mermaid)
+;; This requires sudo npm install -g @mermaid-js/mermaid-cli@9.1.7, crashes with latest
+(package! mermaid-mode)
