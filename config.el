@@ -361,13 +361,13 @@
 
 ;; MERMAID
 (require 'ob-mermaid)
-(setq ob-mermaid-cli-path "/usr/bin/mmdc")
+;; (setq ob-mermaid-cli-path "/usr/bin/mmdc")
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((mermaid . t)))
 
 (require 'mermaid-mode)
-(setq mermaid-mmdc-location "/usr/bin/mmdc")
+;; (setq mermaid-mmdc-location "/usr/bin/mmdc")
 
 
 ;; KEYMAPPINGS
