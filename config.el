@@ -227,6 +227,20 @@
 (use-package! visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
+(use-package! org-tempo
+  :after org
+  :config
+  (setq tempo-interactive t)
+  (tempo-define-template
+   "Note block" '("#+begin_note\n">(p "note content: " note) "\n#+end_note">)
+   "<note")
+
+  ;; https://www.emacswiki.org/emacs/TempoMode
+  (tempo-define-template
+   "Work Note" '("#+title: Notes on " (p "title: " title) n>)
+   "<wnote")
+  )
+
 
 ;;HL-TODO
 
