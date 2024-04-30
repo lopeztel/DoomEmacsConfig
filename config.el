@@ -313,10 +313,6 @@
   (unless (boundp 'org-latex-classes)
     (setq org-latex-classes nill)))
 
-
-;; LATEX PREVIEW
-(setq org-preview-latex-default-process 'imagemagick)
-
 ;; ignore headlines tagged with :noexport:
 (use-package! org-contrib
   :config
