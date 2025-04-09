@@ -165,8 +165,13 @@
   (setq org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/work/Todos.org" "Captured todos")
            "* TODO %?\n  %i\n  %a")
+          ("p" "Personal Todo" entry (file+headline "~/org/Todos.org" "Captured todos")
+           "* TODO %?\n  %i\n  %a")
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n  %i\n  %a")))
+
+;; (setq org-structure-template-alist
+;;       '(("n" "#+TITLE: ?\n#+AUTHOR: ?\n#+DATE: ?\n#+OPTIONS: toc:nil\n#+STARTUP: content\n\n* Introduction\n\n** \n\n* Main Content\n\n** \n\n* Conclusion\n\n** \n")))
 
   ;; Org Publishing
   (setq org-publish-use-timestamps-flag nil) ;;don't generate only when files change
@@ -238,7 +243,7 @@
   ;; https://www.emacswiki.org/emacs/TempoMode
   (tempo-define-template
    "Work Note" '("#+title: Notes on " (p "title: " title) n>)
-   "<wnote")
+   "<wn")
   )
 
 
