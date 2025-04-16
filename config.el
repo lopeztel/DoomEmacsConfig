@@ -315,9 +315,9 @@
   (tempo-define-template
    "Warning block" '("#+begin_warning\n">(p "Warning content: " warning) "\n#+end_warning">)
    "<w")
-  (tempo-define-template
-   "Info block" '("#+begin_info\n">(p "Info content: " info) "\n#+end_info">)
-   "<in")
+  ;; (tempo-define-template
+  ;;  "Info block" '("#+begin_info\n">(p "Info content: " info) "\n#+end_info">)
+  ;;  "<info")
   (tempo-define-template
    "Tip block" '("#+begin_tip\n">(p "Tip content: " tip) "\n#+end_tip">)
    "<t")
