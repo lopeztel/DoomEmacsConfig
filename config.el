@@ -173,42 +173,114 @@
 ;; (setq org-structure-template-alist
 ;;       '(("n" "#+TITLE: ?\n#+AUTHOR: ?\n#+DATE: ?\n#+OPTIONS: toc:nil\n#+STARTUP: content\n\n* Introduction\n\n** \n\n* Main Content\n\n** \n\n* Conclusion\n\n** \n")))
 
-  ;; Org Publishing
-  (setq org-publish-use-timestamps-flag nil) ;;don't generate only when files change
+  ;; ORG-PUBLISH
+  (setq org-publish-use-timestamps-flag nil) ;;not generate only when files change
+
+  (defun my/generate-img-projects ()
+    "Generate publishing entries and names for all *-img directories under ~/org/work."
+    (let* ((base-dir "~/org/work/")
+           (publish-base "~/work-dashboard/")
+           (img-dirs (directory-files base-dir t "^[^.]\\{1,\\}-img$"))
+           (projects '())
+           (names '()))
+      (dolist (dir img-dirs)
+        (let* ((name (file-name-nondirectory (directory-file-name dir)))
+               (project-name (concat "org-" name))
+               (target-dir (expand-file-name name publish-base)))
+          (push project-name names)
+          (push
+           `(,project-name
+             :base-directory ,dir
+             :base-extension "jpg\\|png\\|gif\\|pdf\\|svg"
+             :publishing-directory ,target-dir
+             :recursive t
+             :publishing-function org-publish-attachment)
+           projects)))
+      ;; Return a list of two things: the new projects, and their names
+      (list projects names)))
+
+  (let* ((img-data (my/generate-img-projects))
+         (img-projects (nth 0 img-data))
+         (img-names (nth 1 img-data))
+         (static-projects
+          '(("org-work-files"
+             :base-directory "~/org/work/"
+             :base-extension "org"
+             :publishing-directory "~/work-dashboard/"
+             :recursive t
+             :publishing-function org-html-publish-to-html
+             :headline-levels 4
+             :auto-preamble t)
+            ("org-presentation-files"
+             :base-directory "~/org/work/Presentations/"
+             :base-extension "org"
+             :publishing-directory "~/work-dashboard/Presentations/"
+             :recursive t
+             :publishing-function org-html-publish-to-html
+             :headline-levels 4
+             :auto-preamble t)
+            ("org-work-assets"
+             :base-directory "~/org/work/media/"
+             :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff\\|pptx"
+             :publishing-directory "~/work-dashboard/media/"
+             :recursive t
+             :publishing-function org-publish-attachment)
+            ("org-presentation-assets"
+             :base-directory "~/org/work/Presentations/media/"
+             :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
+             :publishing-directory "~/work-dashboard/Presentations/media/"
+             :recursive t
+             :publishing-function org-publish-attachment)))
+         ;; Combine component names
+         (dashboard-components
+          (append '("org-work-files"
+                    "org-work-assets"
+                    "org-presentation-files"
+                    "org-presentation-assets")
+                  img-names)))
+
+  ;; Final set of projects
   (setq org-publish-project-alist
-        '(("org-work-files"
-           :base-directory "~/org/work/"
-           :base-extension "org"
-           :publishing-directory "~/work-dashboard/"
-           :recursive t
-           :publishing-function org-html-publish-to-html
-           :headline-levels 4
-           :auto-preamble t
-           )
-          ("org-presentation-files"
-           :base-directory "~/org/work/Presentations/"
-           :base-extension "org"
-           :publishing-directory "~/work-dashboard/Presentations/"
-           :recursive t
-           :publishing-function org-html-publish-to-html
-           :headline-levels 4
-           :auto-preamble t
-           )
-          ("org-work-assets"
-           :base-directory "~/org/work/media/"
-           :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
-           :publishing-directory "~/work-dashboard/media/"
-           :recursive t
-           :publishing-function org-publish-attachment
-           )
-          ("org-presentation-assets"
-           :base-directory "~/org/work/Presentations/media/"
-           :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
-           :publishing-directory "~/work-dashboard/Presentations/media/"
-           :recursive t
-           :publishing-function org-publish-attachment
-           )
-          ("work-dashboard" :components("org-work-files" "org-work-assets" "org-presentation-files" "org-presentation-assets"))))
+        (append
+         static-projects
+         img-projects
+         (list `("work-dashboard" :components ,dashboard-components)))))
+
+  ;; ORG-PUBLISH NOTE: This is the old easy way, left for reference
+  ;; (setq org-publish-project-alist
+  ;;       '(("org-work-files"
+  ;;          :base-directory "~/org/work/"
+  ;;          :base-extension "org"
+  ;;          :publishing-directory "~/work-dashboard/"
+  ;;          :recursive t
+  ;;          :publishing-function org-html-publish-to-html
+  ;;          :headline-levels 4
+  ;;          :auto-preamble t
+  ;;          )
+  ;;         ("org-presentation-files"
+  ;;          :base-directory "~/org/work/Presentations/"
+  ;;          :base-extension "org"
+  ;;          :publishing-directory "~/work-dashboard/Presentations/"
+  ;;          :recursive t
+  ;;          :publishing-function org-html-publish-to-html
+  ;;          :headline-levels 4
+  ;;          :auto-preamble t
+  ;;          )
+  ;;         ("org-work-assets"
+  ;;          :base-directory "~/org/work/media/"
+  ;;          :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff\\|pptx"
+  ;;          :publishing-directory "~/work-dashboard/media/"
+  ;;          :recursive t
+  ;;          :publishing-function org-publish-attachment
+  ;;          )
+  ;;         ("org-presentation-assets"
+  ;;          :base-directory "~/org/work/Presentations/media/"
+  ;;          :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
+  ;;          :publishing-directory "~/work-dashboard/Presentations/media/"
+  ;;          :recursive t
+  ;;          :publishing-function org-publish-attachment
+  ;;          )
+  ;;         ("work-dashboard" :components("org-work-files" "org-work-assets" "org-presentation-files" "org-presentation-assets"))))
 )
 
 ;; ORG-HABIT
@@ -232,15 +304,25 @@
 (use-package! visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
+;;NOTE: see https://github.com/fniessen/org-html-themes/blob/26666aa5c3325dfd11b4c7ec83de53fba260b482/examples/org-mode-syntax-example.org#L702 for syntax on these
 (use-package! org-tempo
   :after org
   :config
   (setq tempo-interactive t)
   (tempo-define-template
-   "Note block" '("#+begin_note\n">(p "note content: " note) "\n#+end_note">)
+   "Note block" '("#+begin_note\n">(p "Note content: " note) "\n#+end_note">)
    "<note")
+  (tempo-define-template
+   "Warning block" '("#+begin_warning\n">(p "Warning content: " warning) "\n#+end_warning">)
+   "<w")
+  (tempo-define-template
+   "Info block" '("#+begin_info\n">(p "Info content: " info) "\n#+end_info">)
+   "<in")
+  (tempo-define-template
+   "Tip block" '("#+begin_tip\n">(p "Tip content: " tip) "\n#+end_tip">)
+   "<t")
 
-  ;; https://www.emacswiki.org/emacs/TempoMode
+  ;;TODO: complete the template, see https://www.emacswiki.org/emacs/TempoMode
   (tempo-define-template
    "Work Note" '("#+title: Notes on " (p "title: " title) n>)
    "<wn")
@@ -388,6 +470,7 @@
 (require 'mermaid-mode)
 ;; (setq mermaid-mmdc-location "/usr/bin/mmdc")
 
+;; ORG-DOWNLOAD
 (after! org-download
       (setq org-download-method 'directory)
       (setq org-download-image-dir (concat (file-name-sans-extension (buffer-file-name)) "-img"))
