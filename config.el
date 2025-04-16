@@ -154,6 +154,7 @@
           ("howto" . ?H)
           ("knitting" . ?k)
           ("maintenance" . ?m)
+          ("meeting" . ?M)
           ("note" . ?n)
           ("noexport" .?N)
           ("personal" . ?p)
@@ -168,13 +169,16 @@
           ("p" "Personal Todo" entry (file+headline "~/org/Todos.org" "Captured todos")
            "* TODO %?\n  %i\n  %a")
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
-           "* %?\nEntered on %U\n  %i\n  %a")))
+           "* %?\nEntered on %U\n  %i\n  %a")
+          ("m" "Meeting Notes" entry (file+olp+datetree "~/org/work/meeting_notes.org")
+           "* %^{Meeting Title} %^g\nEntered on: %U\n\n%?" :empty-lines 1))
+  )
 
 ;; (setq org-structure-template-alist
 ;;       '(("n" "#+TITLE: ?\n#+AUTHOR: ?\n#+DATE: ?\n#+OPTIONS: toc:nil\n#+STARTUP: content\n\n* Introduction\n\n** \n\n* Main Content\n\n** \n\n* Conclusion\n\n** \n")))
 
   ;; ORG-PUBLISH
-  (setq org-publish-use-timestamps-flag nil) ;;not generate only when files change
+  (setq org-publish-use-timestamps-flag t) ;;not generate only when files change
 
   (defun my/generate-img-projects ()
     "Generate publishing entries and names for all *-img directories under ~/org/work."
