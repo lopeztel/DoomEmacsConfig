@@ -171,7 +171,21 @@
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n  %i\n  %a")
           ("m" "Meeting Notes" entry (file+olp+datetree "~/org/work/meeting_notes.org")
-           "* %^{Meeting Title} %^g\nEntered on: %U\n\n%?" :empty-lines 1))
+           "* %^{Meeting Title} %^g\nEntered on: %U\n\n%?" :empty-lines 1)
+          ("w" "Work Note" plain
+           ;; Create new file in ~/org/work/ with dynamic name
+           (file
+            (lambda ()
+              (let* ((dir (expand-file-name "~/org/work/"))
+                     (fname (read-string "File name (without .org): "))
+                     (full-path (expand-file-name (concat fname ".org") dir)))
+                ;; Create directory if missing
+                (unless (file-exists-p dir)
+                  (make-directory dir :parents))
+                full-path)))
+           ;; Insert template content
+           (file "~/org/Templates/work-note-template.org"))
+        )
   )
 
 ;; (setq org-structure-template-alist
@@ -325,11 +339,6 @@
   (tempo-define-template
    "Tip block" '("#+begin_tip\n">(p "Tip content: " tip) "\n#+end_tip">)
    "<t")
-
-  ;;TODO: complete the template, see https://www.emacswiki.org/emacs/TempoMode
-  (tempo-define-template
-   "Work Note" '("#+title: Notes on " (p "title: " title) n>)
-   "<wn")
   )
 
 
@@ -435,16 +444,17 @@
        :side right :width .33 :height .5 :ttl nil :modeline nil :quit nil :slot 2)))
   (add-hook 'org-roam-mode-hook #'turn-on-visual-line-mode)
   (setq org-roam-capture-templates
-        '(("m" "main" plain "%?"
-           :if-new (file+head "main/${slug}.org"
-                              "#+title: ${title}\n")
+        '(("m" "main" plain
+           (file "~/org/Templates/roam-main-template.org")
+           :target (file "main/${slug}.org")
            :immediate-finish t
            :unnarrowed t)
-          ("h" "How-To" plain "%?"
-           :if-new
-           (file+head "howto/${slug}.org" "#+title: ${title}\n#+filetags: :howto:")
+          ("h" "How-To" plain
+           (file "~/org/Templates/roam-howto-template.org")
+           :target (file "howto/${slug}.org")
            :immediate-finish t
-           :unnarrowed t)))
+           :unnarrowed t)
+         ))
   )
 
 (use-package! websocket
@@ -475,10 +485,17 @@
 ;; (setq mermaid-mmdc-location "/usr/bin/mmdc")
 
 ;; ORG-DOWNLOAD
+;; NOTE: See https://emacs.stackexchange.com/questions/71100/pasting-images-from-clipboard-into-orgmode
 (after! org-download
       (setq org-download-method 'directory)
       (setq org-download-image-dir (concat (file-name-sans-extension (buffer-file-name)) "-img"))
-      (setq org-download-image-org-width 800)
+      ;; (setq org-download-image-html-width 1000)
+      ;; (setq org-download-image-latex-width 1000)
+      ;; (setq org-download-image-org-width 1000)
+      (setq org-download-image-attr-list
+            '("#+ATTR_ORG: :width 1000 :align center"
+              "#+ATTR_HTML: :with 1000 :align center"
+              "#+ATTR_LATEX: :options {0.9\\textwidth}"))
       (setq org-download-link-format "[[file:%s]]\n"
         org-download-abbreviate-filename-function #'file-relative-name)
       (setq org-download-link-format-function #'org-download-link-format-function-default))
