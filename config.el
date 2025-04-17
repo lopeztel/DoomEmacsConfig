@@ -500,6 +500,19 @@
         org-download-abbreviate-filename-function #'file-relative-name)
       (setq org-download-link-format-function #'org-download-link-format-function-default))
 
+;; HARPER
+;; (after! lsp-mode
+;;   (lsp-register-client
+;;    (make-lsp-client
+;;     :new-connection (lsp-stdio-connection "harper-ls" "--stdio")
+;;     :activation-fn (lsp-activate-on "markdown-mode" "text-mode" "org-mode")
+;;     :server-id 'harper-ls)))
+
+;; NOTE: Alternative is to use eglot, init.el must have lsp +eglot
+(after! 'eglot
+  (add-to-list 'eglot-server-programs
+               '(markdown-mode text-mode org-mode . ("harper-ls" "--stdio"))))
+
 ;; KEYMAPPINGS
 (map! :leader
       :desc "Toggle Treemacs"
