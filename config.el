@@ -74,6 +74,7 @@
 (setq org-agenda-files
       '("~/org/Todos.org"
         "~/org/work/Todos.org"
+        "~/org/work/meeting-notes.org"
         "~/org/Agenda.org"
         "~/org/Birthdays.org"
         "~/org/Habits.org"
@@ -110,6 +111,19 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;; CALENDAR settings
+;; From https://emacs.stackexchange.com/questions/10965/easiest-way-to-customize-holidays-that-appear-in-org-agenda/13236#13236
+(after! calendar
+  (setq calendar-week-start-day 1
+        calendar-location-name "Oslo"
+        holiday-bahai-holidays nil         ; Disable Bahá'í holidays
+        holiday-hebrew-holidays nil        ; Disable Hebrew holidays
+        holiday-islamic-holidays nil       ; Disable Islamic holidays
+        holiday-solar-holidays nil         ; Disable solar holidays
+  )
+)
+
 
 ;; ORGMODE CONFIG
 
