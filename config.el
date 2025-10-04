@@ -425,7 +425,8 @@
                   "ist")))
 
   (unless (boundp 'org-latex-classes)
-    (setq org-latex-classes nill)))
+    (setq org-latex-classes nill))
+)
 
 ;; ignore headlines tagged with :noexport:
 (use-package! org-contrib
@@ -487,6 +488,8 @@
           org-roam-ui-open-on-start t))
 
 (require 'org-roam-export)
+
+(require 'ox-dnd)
 
 ;; MERMAID
 (require 'ob-mermaid)
