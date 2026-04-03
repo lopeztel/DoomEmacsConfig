@@ -57,3 +57,5 @@
 ;; NOTE: This requires sudo npm install -g @mermaid-js/mermaid-cli@9.1.7, crashes with latest
 (package! mermaid-mode)
 (package! ox-dnd :recipe (:host github :repo "xeals/emacs-org-dnd" :files ("*.el")))
+;; NOTE: This requires local packages khal and vdirsync
+(package! khalel)

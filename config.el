@@ -76,6 +76,7 @@
         "~/org/work/Todos.org"
         "~/org/work/meeting-notes.org"
         "~/org/Agenda.org"
+        "~/org/calendar.org"
         "~/org/Birthdays.org"
         "~/org/Habits.org"
         "~/org/Holidays.org"))
@@ -469,6 +470,16 @@
            :target (file "howto/${slug}.org")
            :immediate-finish t
            :unnarrowed t)
+          ("d" "D&D root node" plain
+           (file "~/org/Templates/dnd-root-node-template.org")
+           :target (file "DnD_root_nodes/${slug}.org")
+           :immediate-finish t
+           :unnarrowed t)
+          ("d" "D&D node" plain
+           (file "~/org/Templates/dnd-node-template.org")
+           :target (file "DnD_nodes/${slug}.org")
+           :immediate-finish t
+           :unnarrowed t)
          ))
   )
 
@@ -529,6 +540,21 @@
 (after! 'eglot
   (add-to-list 'eglot-server-programs
                '(markdown-mode text-mode org-mode . ("harper-ls" "--stdio"))))
+
+;; CALDAV
+;; Calendar sync
+;; https://gitlab.com/hperrey/khalel
+(use-package! khalel
+  :after org
+  :config
+;; (setq khalel-khal-command "~/.local/bin/khal")
+;; (setq khalel-vdirsyncer-command "vdirsyncer")
+(setq khalel-capture-key "e")
+(setq khalel-import-org-file (concat org-directory "calendar.org"))
+(setq khalel-import-org-file-confirm-overwrite nil)
+(setq khalel-default-calendar "Personal")
+;; (setq khalel-import-end-date "+30d")
+(khalel-add-capture-template))
 
 ;; KEYMAPPINGS
 (map! :leader
