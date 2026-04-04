@@ -528,6 +528,9 @@
         org-download-abbreviate-filename-function #'file-relative-name)
       (setq org-download-link-format-function #'org-download-link-format-function-default))
 
+;; OX-DND-HTML
+(use-package! ox-dnd-html :after org)
+
 ;; HARPER
 ;; (after! lsp-mode
 ;;   (lsp-register-client

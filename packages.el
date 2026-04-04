@@ -59,3 +59,7 @@
 (package! ox-dnd :recipe (:host github :repo "xeals/emacs-org-dnd" :files ("*.el")))
 ;; NOTE: This requires local packages khal and vdirsync
 (package! khalel)
+(package! ox-dnd-html :recipe (:host github :repo "lopeztel/ox-dnd-html"
+                          :files ("*.el" "ox-dnd-html-assets")))
+;; (package! ox-dnd-html :recipe (:host github :repo "lopeztel/ox-dnd-html"
+;;                           :files ("*.el" (:defaults "ox-dnd-html-assets"))))
