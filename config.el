@@ -544,6 +544,11 @@
   (add-to-list 'eglot-server-programs
                '(markdown-mode text-mode org-mode . ("harper-ls" "--stdio"))))
 
+(use-package! ox-hugo
+  :after ox
+  :config
+  (setq org-hugo-base-dir "~/hugo_local_setup/lopeztel_blog"))
+
 ;; CALDAV
 ;; Calendar sync
 ;; https://gitlab.com/hperrey/khalel
