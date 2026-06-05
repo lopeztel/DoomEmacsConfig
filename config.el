@@ -258,6 +258,12 @@
              :publishing-directory "~/work-dashboard/media/"
              :recursive t
              :publishing-function org-publish-attachment)
+            ("org-work-stylesheets"
+             :base-directory "~/org/work/css/"
+             :base-extension "css"
+             :publishing-directory "~/work-dashboard/css/"
+             :recursive t
+             :publishing-function org-publish-attachment)
             ("org-presentation-assets"
              :base-directory "~/org/work/Presentations/media/"
              :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
@@ -268,6 +274,7 @@
          (dashboard-components
           (append '("org-work-files"
                     "org-work-assets"
+                    "org-work-stylesheets"
                     "org-presentation-files"
                     "org-presentation-assets")
                   img-names)))
