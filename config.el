@@ -21,8 +21,8 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept.
 ;; Linux
-(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 18 :weight 'medium)
-      doom-variable-pitch-font (font-spec :family "SauceCodeProNerdFont" :size 20)
+(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 16 :weight 'medium)
+      doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
       doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
 ;; Windows
  ; (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
@@ -570,6 +570,87 @@
 (setq khalel-default-calendar "Personal")
 ;; (setq khalel-import-end-date "+30d")
 (khalel-add-capture-template))
+
+;; POPTERM
+
+;; (use-package! popterm
+;;   :config
+;;   (setq popterm-backend 'vterm
+;;         popterm-scope nil
+;;         popterm-auto-cd t)
+
+;;   (defvar my/popterm-last "1"
+;;     "The most recently used Popterm instance.")
+
+;;   (defun my/popterm-toggle (&optional count)
+;;     "Toggle the last Popterm, or numbered instance COUNT, without prompting."
+;;     (interactive "P")
+;;     (let* ((name (if count
+;;                      (number-to-string (prefix-numeric-value count))
+;;                    my/popterm-last))
+;;            (source-window (selected-window)))
+;;       (setq my/popterm-last name)
+
+;;       (let ((current-prefix-arg nil)
+;;             (popterm-display-method 'posframe))
+;;         (popterm-toggle name popterm-backend))
+
+;;       ;; vterm may select its newly created buffer on first creation.
+;;       ;; Restore the original editing window while leaving the posframe visible.
+;;       (when (window-live-p source-window)
+;;         (select-window source-window))))
+
+;;   (popterm-global-mode 1)
+
+;;   (map! :n "C-\\" #'my/popterm-toggle))
+
+(use-package! popterm
+  :config
+  (setq popterm-backend 'vterm
+        popterm-scope nil
+
+        ;; Fraction of the current Emacs frame.
+        popterm-posframe-width-ratio  0.85
+        popterm-posframe-height-ratio 0.85
+
+        ;; Minimum width in columns.
+        popterm-posframe-min-width 100
+
+        ;; Border width in pixels.
+        popterm-posframe-border-width 3
+        popterm-auto-cd t)
+
+  (defvar my/popterm-last "1"
+    "The most recently used Popterm instance.")
+
+  (defun my/popterm--create-preserve-source-window (orig-fun &rest args)
+    "Prevent terminal creation from replacing the source buffer."
+    (let* ((source-window (selected-window))
+           (source-buffer (window-buffer source-window)))
+      (prog1
+          (apply orig-fun args)
+        (when (and (window-live-p source-window)
+                   (buffer-live-p source-buffer))
+          (set-window-buffer source-window source-buffer)
+          (select-window source-window)))))
+
+  (advice-add #'popterm--create :around
+              #'my/popterm--create-preserve-source-window)
+
+  (defun my/popterm-toggle (&optional count)
+    "Toggle the last Popterm, or numbered instance COUNT, without prompting."
+    (interactive "P")
+    (let ((name (if count
+                    (number-to-string (prefix-numeric-value count))
+                  my/popterm-last)))
+      (setq my/popterm-last name)
+      (let ((current-prefix-arg nil)
+            (popterm-display-method 'posframe))
+        (popterm-toggle name popterm-backend))))
+
+  (popterm-global-mode 1)
+
+  (map! :n "C-\\" #'my/popterm-toggle))
 
 ;; KEYMAPPINGS
 (map! :leader

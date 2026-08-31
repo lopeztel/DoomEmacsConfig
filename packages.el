@@ -62,3 +62,4 @@
 (package! ox-dnd-html :recipe (:host github :repo "lopeztel/ox-dnd-html"
                           :files ("*.el" "ox-dnd-html-assets")))
 (package! ox-hugo)
+(package! popterm)
