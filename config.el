@@ -573,38 +573,8 @@
 
 ;; POPTERM
 
-;; (use-package! popterm
-;;   :config
-;;   (setq popterm-backend 'vterm
-;;         popterm-scope nil
-;;         popterm-auto-cd t)
-
-;;   (defvar my/popterm-last "1"
-;;     "The most recently used Popterm instance.")
-
-;;   (defun my/popterm-toggle (&optional count)
-;;     "Toggle the last Popterm, or numbered instance COUNT, without prompting."
-;;     (interactive "P")
-;;     (let* ((name (if count
-;;                      (number-to-string (prefix-numeric-value count))
-;;                    my/popterm-last))
-;;            (source-window (selected-window)))
-;;       (setq my/popterm-last name)
-
-;;       (let ((current-prefix-arg nil)
-;;             (popterm-display-method 'posframe))
-;;         (popterm-toggle name popterm-backend))
-
-;;       ;; vterm may select its newly created buffer on first creation.
-;;       ;; Restore the original editing window while leaving the posframe visible.
-;;       (when (window-live-p source-window)
-;;         (select-window source-window))))
-
-;;   (popterm-global-mode 1)
-
-;;   (map! :n "C-\\" #'my/popterm-toggle))
-
 (use-package! popterm
+  :hook (after-init . popterm-global-mode)
   :config
   (setq popterm-backend 'vterm
         popterm-scope nil
@@ -618,7 +588,7 @@
 
         ;; Border width in pixels.
         popterm-posframe-border-width 3
-        popterm-auto-cd t)
+        popterm-auto-cd nil)
 
   (defvar my/popterm-last "1"
     "The most recently used Popterm instance.")
@@ -647,8 +617,6 @@
       (let ((current-prefix-arg nil)
             (popterm-display-method 'posframe))
         (popterm-toggle name popterm-backend))))
-
-  (popterm-global-mode 1)
 
   (map! :n "C-\\" #'my/popterm-toggle))
 
