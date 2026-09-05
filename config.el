@@ -112,7 +112,6 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-
 ;; CALENDAR settings
 ;; From https://emacs.stackexchange.com/questions/10965/easiest-way-to-customize-holidays-that-appear-in-org-agenda/13236#13236
 (after! calendar
@@ -578,15 +577,9 @@
   :config
   (setq popterm-backend 'vterm
         popterm-scope nil
-
-        ;; Fraction of the current Emacs frame.
         popterm-posframe-width-ratio  0.85
         popterm-posframe-height-ratio 0.85
-
-        ;; Minimum width in columns.
         popterm-posframe-min-width 100
-
-        ;; Border width in pixels.
         popterm-posframe-border-width 3
         popterm-auto-cd nil)
 
@@ -619,6 +612,30 @@
         (popterm-toggle name popterm-backend))))
 
   (map! :n "C-\\" #'my/popterm-toggle))
+
+;; Configure Evil behavior for popterm buffers specifically
+(after! evil
+  (defun my/popterm-esc-handler ()
+    "Send ESC to terminal in popterm buffers, normal behavior elsewhere."
+    (interactive)
+    (if (string-prefix-p "*popterm" (buffer-name))
+        (vterm-send-key "<escape>")
+      (evil-normal-state)))
+
+  (add-hook! 'vterm-mode-hook
+    (when (string-prefix-p "*popterm" (buffer-name))
+      (setq-local vterm-keymap-exceptions '("C-c"))
+      (evil-set-initial-state (current-buffer) 'insert)
+      (evil-define-key 'insert vterm-mode-map (kbd "<escape>") #'my/popterm-esc-handler)
+      (evil-define-key 'normal vterm-mode-map (kbd "<escape>") #'my/popterm-esc-handler)
+      (define-key vterm-mode-map (kbd "C-c C-o")
+        (lambda ()
+          (interactive)
+          (if (eq evil-state 'normal)
+              (evil-insert-state)
+            (evil-normal-state))))
+      (setq-local evil-escape-key-sequence nil)
+      (setq-local evil-escape-delay nil))))
 
 ;; KEYMAPPINGS
 (map! :leader
