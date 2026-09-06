@@ -637,6 +637,25 @@
       (setq-local evil-escape-key-sequence nil)
       (setq-local evil-escape-delay nil))))
 
+;;MARKDOWN
+;;NOTE Just making it look nicer
+(after! markdown-mode
+(custom-set-faces
+   '(markdown-header-face-1 ((t (:height 1.50 :weight bold))))
+   '(markdown-header-face-2 ((t (:height 1.30 :weight bold))))
+   '(markdown-header-face-3 ((t (:height 1.18 :weight bold))))
+   '(markdown-header-face-4 ((t (:height 1.08 :weight bold))))
+   '(markdown-header-face-5 ((t (:height 1.02 :weight bold))))
+   '(markdown-header-face-6 ((t (:height 0.98 :weight bold)))))
+  (add-hook 'markdown-mode-hook
+            (lambda ()
+              (display-line-numbers-mode -1)
+              (visual-line-mode 1)
+              (variable-pitch-mode 1)
+              (olivetti-mode 1)))
+  (add-hook 'markdown-mode-hook
+            #'markdown-toggle-markup-hiding))
+
 ;; KEYMAPPINGS
 (map! :leader
       :desc "Toggle Treemacs"
