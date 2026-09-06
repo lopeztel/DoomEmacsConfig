@@ -45,6 +45,50 @@
  (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
  (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
 
+;; ~/.config/doom/config.el
+
+;; Enable built-in desktop save (buffers, windows, etc.)
+;; (desktop-save-mode 1)
+
+(defvar doom/frame-geometry-file
+  (expand-file-name "frame-geometry.el" user-emacs-directory)
+  "File to store frame geometry.")
+
+(defun doom/save-frame-geometry ()
+  "Save current frame's geometry to a file."
+  (when (and (display-graphic-p)
+             (not (daemonp)))
+    (let* ((frame (selected-frame))
+           (left   (frame-parameter frame 'left))
+           (top    (frame-parameter frame 'top))
+           (width  (frame-parameter frame 'width))
+           (height (frame-parameter frame 'height)))
+      ;; Ensure all values are numbers
+      (unless (numberp left)   (setq left 0))
+      (unless (numberp top)    (setq top 0))
+      (unless (numberp width)  (setq width 80))
+      (unless (numberp height) (setq height 25))
+      (with-temp-buffer
+        (insert ";;; Emacs frame geometry\n")
+        (insert "(setq initial-frame-alist\n")
+        (insert "  '( (top . ")    (insert (number-to-string (max top 0)))    (insert ")\n")
+        (insert "     (left . ")  (insert (number-to-string (max left 0)))  (insert ")\n")
+        (insert "     (width . ") (insert (number-to-string (max width 0))) (insert ")\n")
+        (insert "     (height . ")(insert (number-to-string (max height 0)))(insert ")))\n")
+        (when (file-writable-p doom/frame-geometry-file)
+          (write-file doom/frame-geometry-file))))))
+
+(defun doom/load-frame-geometry ()
+  "Load saved frame geometry and apply to new frames."
+  (when (and (display-graphic-p)
+             (not (daemonp))
+             (file-readable-p doom/frame-geometry-file))
+    (load-file doom/frame-geometry-file)))
+
+;; Load geometry early, save on exit
+(add-hook 'after-init-hook #'doom/load-frame-geometry)
+(add-hook 'kill-emacs-hook #'doom/save-frame-geometry)
+
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
