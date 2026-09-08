@@ -114,16 +114,25 @@
 
 (setq org-directory "~/org/")
 
-;; Set org-agenda-files
-(setq org-agenda-files
-      '("~/org/Todos.org"
-        "~/org/work/Todos.org"
-        "~/org/work/meeting-notes.org"
-        "~/org/Agenda.org"
-        "~/org/calendar.org"
-        "~/org/Birthdays.org"
-        "~/org/Habits.org"
-        "~/org/Holidays.org"))
+;; Verify org directory exists before setting agenda files (does not create automatically)
+(when (file-directory-p org-directory)
+  (setq org-agenda-files
+        (cl-remove-if-not
+         #'file-exists-p
+         '("~/org/Todos.org"
+           "~/org/work/Todos.org"
+           "~/org/work/meeting-notes.org"
+           "~/org/Agenda.org"
+           "~/org/calendar.org"
+           "~/org/Birthdays.org"
+           "~/org/Habits.org"
+           "~/org/Holidays.org"))))
+
+;; Warn if org directory is missing
+(unless (file-directory-p org-directory)
+  (display-warning 'my-config
+                   (format "Org directory %s does not exist. Org agenda features will be limited." org-directory)
+                   :warning))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -250,6 +259,7 @@
 ;;       '(("n" "#+TITLE: ?\n#+AUTHOR: ?\n#+DATE: ?\n#+OPTIONS: toc:nil\n#+STARTUP: content\n\n* Introduction\n\n** \n\n* Main Content\n\n** \n\n* Conclusion\n\n** \n")))
 
   ;; ORG-PUBLISH
+  (when (file-directory-p (expand-file-name "work" org-directory))
   (setq org-publish-use-timestamps-flag t) ;;not generate only when files change
 
   (defun my/generate-img-projects ()
@@ -328,6 +338,7 @@
          static-projects
          img-projects
          (list `("work-dashboard" :components ,dashboard-components)))))
+) ;; end when org/work exists
 
   ;; ORG-PUBLISH NOTE: This is the old easy way, left for reference
   ;; (setq org-publish-project-alist
@@ -495,6 +506,8 @@
 
 ;; ORG-ROAM
 ;; some elements taken from: https://github.com/jethrokuan/dots/blob/master/.doom.d/config.el
+
+(when (file-directory-p (expand-file-name "secondBrain" org-directory))
 (use-package! org-roam
   :init
   (setq org-roam-directory (file-truename "~/org/secondBrain")
@@ -532,6 +545,7 @@
            :unnarrowed t)
          ))
   )
+)
 
 (use-package! websocket
     :after org-roam)
@@ -699,8 +713,3 @@
               (olivetti-mode 1)))
   (add-hook 'markdown-mode-hook
             #'markdown-toggle-markup-hiding))
-
-;; KEYMAPPINGS
-(map! :leader
-      :desc "Toggle Treemacs"
-      "e" #'treemacs)
