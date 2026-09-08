@@ -21,9 +21,19 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept.
 ;; Linux
-(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 16 :weight 'medium)
-      doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
-      doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
+;; (setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 16 :weight 'medium)
+;;       doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
+;;       doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
+;; Font configuration - only apply if fonts are available
+(let ((mono-font (find-font (font-spec :family "JetBrainsMono Nerd Font Mono")))
+      (pitch-font (find-font (font-spec :family "SauceCodePro Nerd Font"))))
+  (if (and mono-font pitch-font)
+      ;; Both fonts found, use your config
+      (setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 16 :weight 'medium)
+            doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
+            doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 25))
+    ;; Fonts not found, use Emacs defaults
+    (message "Warning: Preferred fonts not found, using system defaults")))
 ;; Windows
  ; (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
  ;       doom-variable-pitch-font (font-spec :family "SauceCodePro NF" :size 20 :weight 'regular)
@@ -92,7 +102,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-nord-aurora)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
