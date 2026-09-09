@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 ;; (setq user-full-name "John Doe"
@@ -25,13 +24,13 @@
 ;;       doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
 ;;       doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
 ;; Font configuration - only apply if fonts are available
-(let ((mono-font (find-font (font-spec :family "JetBrainsMono Nerd Font Mono")))
+(let ((mono-font (find-font (font-spec :family "JetBrainsMono Nerd Font")))
       (pitch-font (find-font (font-spec :family "SauceCodePro Nerd Font"))))
   (if (and mono-font pitch-font)
       ;; Both fonts found, use your config
-      (setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 16 :weight 'medium)
+      (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'medium)
             doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
-            doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 25))
+            doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 25))
     ;; Fonts not found, use Emacs defaults
     (message "Warning: Preferred fonts not found, using system defaults")))
 ;; Windows
@@ -52,8 +51,8 @@
 ;; Windows & Linux X11
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
 ;;(set-frame-parameter (selected-frame) 'alpha <both>)
- (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
- (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+ (set-frame-parameter (selected-frame) 'alpha '(90 . 85))
+ (add-to-list 'default-frame-alist '(alpha . (90 . 85)))
 
 ;; ~/.config/doom/config.el
 
