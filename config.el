@@ -722,3 +722,15 @@
               (olivetti-mode 1)))
   (add-hook 'markdown-mode-hook
             #'markdown-toggle-markup-hiding))
+
+;;fix for locate invalid args
+(with-eval-after-load 'consult
+  (setq consult-locate-args "mdfind"))
+
+;; PDF
+(after! 'pdf-view
+  (define-key pdf-view-mode-map (kbd "C-c x") #'pdf-view-as-text))
+
+(after! 'pdf-text
+  (define-key pdf-text-mode-map (kbd "RET") #'pdf-text-show-in-pdf)
+  (define-key pdf-text-mode-map (kbd "q") #'bury-buffer))

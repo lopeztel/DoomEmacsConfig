@@ -64,3 +64,4 @@
 (package! ox-hugo)
 (package! olivetti)
 (package! popterm)
+(package! pdf-text :recipe (:host github :repo "agzam/pdf-text"))
