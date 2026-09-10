@@ -725,7 +725,8 @@
 
 ;;fix for locate invalid args
 (with-eval-after-load 'consult
-  (setq consult-locate-args "mdfind"))
+  (when (eq system-type 'darwin)
+    (setq consult-locate-args "mdfind")))
 
 ;; PDF
 (after! 'pdf-view
