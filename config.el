@@ -19,24 +19,18 @@
 ;;
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept.
-;; Linux
-;; (setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 16 :weight 'medium)
-;;       doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
-;;       doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 25))
-;; Font configuration - only apply if fonts are available
-(let ((mono-font (find-font (font-spec :family "JetBrainsMono Nerd Font")))
+
+;; FONTS
+;; NOTE only apply if fonts are available
+(let ((mono-font (find-font (font-spec :family "JetBrainsMono Nerd Font Mono")))
       (pitch-font (find-font (font-spec :family "SauceCodePro Nerd Font"))))
   (if (and mono-font pitch-font)
       ;; Both fonts found, use your config
-      (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'medium)
+      (setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 16 :weight 'medium)
             doom-variable-pitch-font (font-spec :family "SauceCodePro Nerd Font" :size 20)
-            doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 25))
+            doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 25))
     ;; Fonts not found, use Emacs defaults
     (message "Warning: Preferred fonts not found, using system defaults")))
-;; Windows
- ; (setq doom-font (font-spec :family "FiraCode NFM" :size 18 :weight 'medium)
- ;       doom-variable-pitch-font (font-spec :family "SauceCodePro NF" :size 20 :weight 'regular)
- ;       doom-big-font (font-spec :family "FiraCode NF" :size 32))
 
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
@@ -45,16 +39,8 @@
 
 ;; Emacs transparency (compatible with wayland)
 ;; Taken from https://www.emacswiki.org/emacs/TransparentEmacs
-;; Linux Wayland
-;; (set-frame-parameter nil 'alpha-background 85)
-;; (add-to-list 'default-frame-alist '(alpha-background . 85))
-;; Windows & Linux X11
-;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
-;;(set-frame-parameter (selected-frame) 'alpha <both>)
  (set-frame-parameter (selected-frame) 'alpha '(90 . 85))
  (add-to-list 'default-frame-alist '(alpha . (90 . 85)))
-
-;; ~/.config/doom/config.el
 
 ;; Enable built-in desktop save (buffers, windows, etc.)
 ;; (desktop-save-mode 1)
@@ -94,7 +80,7 @@
              (file-readable-p doom/frame-geometry-file))
     (load-file doom/frame-geometry-file)))
 
-;; Load geometry early, save on exit
+;; Load geometry early, save on exit (remember window size)
 (add-hook 'after-init-hook #'doom/load-frame-geometry)
 (add-hook 'kill-emacs-hook #'doom/save-frame-geometry)
 
@@ -174,6 +160,7 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
 ;; CALENDAR settings
 ;; From https://emacs.stackexchange.com/questions/10965/easiest-way-to-customize-holidays-that-appear-in-org-agenda/13236#13236
 (after! calendar
@@ -186,9 +173,7 @@
   )
 )
 
-
 ;; ORGMODE CONFIG
-
 (defun efs/org-mode-setup ()
   (display-line-numbers-mode 0)
   (org-indent-mode)
@@ -263,9 +248,6 @@
            (file "~/org/Templates/work-note-template.org"))
         )
   )
-
-;; (setq org-structure-template-alist
-;;       '(("n" "#+TITLE: ?\n#+AUTHOR: ?\n#+DATE: ?\n#+OPTIONS: toc:nil\n#+STARTUP: content\n\n* Introduction\n\n** \n\n* Main Content\n\n** \n\n* Conclusion\n\n** \n")))
 
   ;; ORG-PUBLISH
   (when (file-directory-p (expand-file-name "work" org-directory))
@@ -347,44 +329,7 @@
          static-projects
          img-projects
          (list `("work-dashboard" :components ,dashboard-components)))))
-) ;; end when org/work exists
-
-  ;; ORG-PUBLISH NOTE: This is the old easy way, left for reference
-  ;; (setq org-publish-project-alist
-  ;;       '(("org-work-files"
-  ;;          :base-directory "~/org/work/"
-  ;;          :base-extension "org"
-  ;;          :publishing-directory "~/work-dashboard/"
-  ;;          :recursive t
-  ;;          :publishing-function org-html-publish-to-html
-  ;;          :headline-levels 4
-  ;;          :auto-preamble t
-  ;;          )
-  ;;         ("org-presentation-files"
-  ;;          :base-directory "~/org/work/Presentations/"
-  ;;          :base-extension "org"
-  ;;          :publishing-directory "~/work-dashboard/Presentations/"
-  ;;          :recursive t
-  ;;          :publishing-function org-html-publish-to-html
-  ;;          :headline-levels 4
-  ;;          :auto-preamble t
-  ;;          )
-  ;;         ("org-work-assets"
-  ;;          :base-directory "~/org/work/media/"
-  ;;          :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff\\|pptx"
-  ;;          :publishing-directory "~/work-dashboard/media/"
-  ;;          :recursive t
-  ;;          :publishing-function org-publish-attachment
-  ;;          )
-  ;;         ("org-presentation-assets"
-  ;;          :base-directory "~/org/work/Presentations/media/"
-  ;;          :base-extension "jpg\\|png\\|gif\\|pdf\\|svg\\|diff"
-  ;;          :publishing-directory "~/work-dashboard/Presentations/media/"
-  ;;          :recursive t
-  ;;          :publishing-function org-publish-attachment
-  ;;          )
-  ;;         ("work-dashboard" :components("org-work-files" "org-work-assets" "org-presentation-files" "org-presentation-assets"))))
-)
+)) ;; end when org/work exists
 
 ;; ORG-HABIT
 (use-package! org-habit
@@ -398,7 +343,6 @@
 
 ;; VISUAL-FILL
 ;;Center org buffers
-
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
         visual-fill-column-center-text t)
@@ -431,7 +375,6 @@
 (add-hook 'org-mode-hook #'my/org-setup-custom-templates)
 
 ;;HL-TODO
-
 (after! hl-todo
 (setq hl-todo-keyword-faces
       '(("TODO" . "#EBCB8B")
@@ -509,7 +452,6 @@
   (ox-extras-activate '(ignore-headlines)))
 
 ;; EVIL
-
 (use-package! evil
   :config
   ;; Use visual line motions even outside of visual-line-mode buffers
@@ -518,7 +460,6 @@
 
 ;; ORG-ROAM
 ;; some elements taken from: https://github.com/jethrokuan/dots/blob/master/.doom.d/config.el
-
 (when (file-directory-p (expand-file-name "secondBrain" org-directory))
 (use-package! org-roam
   :init
@@ -641,7 +582,6 @@
 (khalel-add-capture-template))
 
 ;; POPTERM
-
 (use-package! popterm
   :hook (after-init . popterm-global-mode)
   :config
