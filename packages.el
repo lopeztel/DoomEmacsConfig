@@ -54,7 +54,7 @@
 (unpin! org-roam)
 (package! org-roam-ui)
 (package! ob-mermaid)
-;; NOTE: This requires sudo npm install -g @mermaid-js/mermaid-cli@9.1.7, crashes with latest
+;; NOTE: mermaid-cli (mmdc) 9.1.7
 (package! mermaid-mode)
 (package! ox-dnd :recipe (:host github :repo "xeals/emacs-org-dnd" :files ("*.el")))
 ;; NOTE: This requires local packages khal and vdirsync

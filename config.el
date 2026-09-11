@@ -407,25 +407,28 @@
 (use-package! visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
+;;ORGMODE CUSTOM BLOCKS
 ;;NOTE: see https://github.com/fniessen/org-html-themes/blob/26666aa5c3325dfd11b4c7ec83de53fba260b482/examples/org-mode-syntax-example.org#L702 for syntax on these
-(use-package! org-tempo
-  :after org
-  :config
-  (setq tempo-interactive t)
-  (tempo-define-template
-   "Note block" '("#+begin_note\n">(p "Note content: " note) "\n#+end_note">)
-   "<note")
-  (tempo-define-template
-   "Warning block" '("#+begin_warning\n">(p "Warning content: " warning) "\n#+end_warning">)
-   "<w")
-  ;; (tempo-define-template
-  ;;  "Info block" '("#+begin_info\n">(p "Info content: " info) "\n#+end_info">)
-  ;;  "<info")
-  (tempo-define-template
-   "Tip block" '("#+begin_tip\n">(p "Tip content: " tip) "\n#+end_tip">)
-   "<t")
-  )
+(defun my/org-normalize-structure-templates ()
+  (dolist (entry '(("n" . "note")
+                   ("w" . "warning")
+                   ("in" . "info")
+                   ("t" . "tip")))
+    ;; Replace any existing entry with the same key instead of adding a
+    ;; duplicate cons cell.
+    (setq org-structure-template-alist
+          (cons entry
+                (assoc-delete-all (car entry)
+                                  org-structure-template-alist)))))
 
+(after! org
+  (require 'org-tempo))
+
+(defun my/org-setup-custom-templates ()
+  (my/org-normalize-structure-templates)
+  (org-tempo-add-templates))
+
+(add-hook 'org-mode-hook #'my/org-setup-custom-templates)
 
 ;;HL-TODO
 
