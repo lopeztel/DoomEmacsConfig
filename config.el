@@ -678,3 +678,6 @@
 (after! 'pdf-text
   (define-key pdf-text-mode-map (kbd "RET") #'pdf-text-show-in-pdf)
   (define-key pdf-text-mode-map (kbd "q") #'bury-buffer))
+
+;;NIX
+(setq nix-nixfmt-bin "nixfmt")
