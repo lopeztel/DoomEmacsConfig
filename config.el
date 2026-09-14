@@ -251,7 +251,137 @@
 
   ;; ORG-PUBLISH
   (when (file-directory-p (expand-file-name "work" org-directory))
-  (setq org-publish-use-timestamps-flag t) ;;not generate only when files change
+  (setq org-publish-use-timestamps-flag t) ;;only generate on file changes
+
+  (require 'ox-html)
+  (require 'ox-publish)
+  ;; Export priority cookies so generated headings retain their [A]/[B]/[C]
+  ;; markers for the stylesheet and dashboard presentation.
+  (setq org-export-with-priority t)
+  ;; Inline HTMLize styles preserve colors from the currently active Doom theme
+  ;; without hardcoding a theme into the publishing configuration.
+  (setq org-html-htmlize-output-type 'inline-css)
+
+  ;; Replace Org outline containers with native disclosures while preserving
+  ;; heading IDs, levels, text, and nested exported contents.
+  (defun my/org-html-foldable-headline (headline contents info)
+    "Export HEADLINE as a collapsed native HTML disclosure element."
+    (let ((html (org-html-headline headline contents info)))
+      (if (or (not html)
+              (not
+               (string-match
+                "<div\\([^>]*\\)>\n<h\\([1-6]\\) id=\"\\([^\"]+\\)\"\\([^>]*\\)>\\(.*\\)</h[1-6]>\n"
+                html)))
+          html
+        (let* ((outer-attributes (match-string 1 html))
+               (level (match-string 2 html))
+               (id (match-string 3 html))
+               (heading-attributes (match-string 4 html))
+               (title (match-string 5 html))
+               (contents (substring html (match-end 0))))
+          (if (not (string-match "\n</div>\\(?:\n\\)?\\'" contents))
+              html
+            (concat
+             "<details" outer-attributes ">\n"
+             "<summary role=\"heading\" aria-level=\"" level
+             "\" id=\"" id "\"" heading-attributes ">" title "</summary>\n"
+             (substring contents 0 (match-beginning 0))
+             "\n</details>\n"))))))
+
+  ;; Keep the backend template path compatible with native folding by wrapping
+  ;; the generated table of contents in its own disclosure element.
+  (defun my/org-html-foldable-inner-template (contents info)
+    "Wrap the generated table of contents in a native disclosure element."
+    (let ((html (org-html-template contents info)))
+      (if (not
+           (string-match
+            "<div id=\"table-of-contents\"\\([^>]*\\)>\n<h2>\\([^<]+\\)</h2>\n"
+            html))
+          html
+        (let* ((attributes (match-string 1 html))
+               (title (match-string 2 html))
+               (start (match-beginning 0))
+               (body-start (match-end 0))
+               (end (and (string-match "\n</div>\n</div>\n" html body-start)
+                         (match-end 0)))
+               (close-start (and end (- end (length "\n</div>\n</div>\n")))))
+          (if (not end)
+              html
+            (concat
+             (substring html 0 start)
+             "<details id=\"table-of-contents\"" attributes ">\n"
+             "<summary role=\"heading\" aria-level=\"2\">" title "</summary>\n"
+             (substring html body-start close-start)
+             "\n</div>\n</details>\n"
+             (substring html end)))))))
+
+  ;; Apply the same TOC wrapper after publishing, because the final publisher
+  ;; output can bypass the backend template translation hook.
+  (defun my/org-html-wrap-toc (html)
+    "Wrap generated table of contents HTML in a native disclosure element."
+    (if (not
+         (string-match
+          "<div id=\"table-of-contents\"\\([^>]*\\)>\n<h2>\\([^<]+\\)</h2>\n"
+          html))
+        html
+      (let* ((attributes (match-string 1 html))
+             (title (match-string 2 html))
+             (start (match-beginning 0))
+             (body-start (match-end 0))
+             (close-start (string-match
+                           "\n</div>\n</div>\n<details"
+                           html body-start))
+             (end (and close-start
+                       (+ close-start (length "\n</div>\n</div>\n")))))
+        (if (not close-start)
+            html
+          (concat
+           (substring html 0 start)
+           "<details id=\"table-of-contents\"" attributes ">\n"
+           "<summary role=\"heading\" aria-level=\"2\">" title "</summary>\n"
+           (substring html body-start close-start)
+           "\n</div>\n</details>\n"
+           (substring html end))))))
+
+  ;; Org emits one generic priority class; add level classes so custom.css can
+  ;; distinguish A, B, and C highlights without changing the Org source.
+  (defun my/org-html-colorize-priorities (html)
+    "Add priority-specific classes to exported priority spans."
+    (dolist (priority '("A" "B" "C"))
+      (setq html
+            (replace-regexp-in-string
+             (format "<span class=\"priority\">\\[%s\\]</span>" priority)
+             (format "<span class=\"priority priority-%s\">[%s]</span>"
+                     (downcase priority) priority)
+             html t t)))
+    html)
+
+  (org-export-define-derived-backend
+      'my-org-html 'html
+    :translate-alist '((headline . my/org-html-foldable-headline)
+                       (template . my/org-html-foldable-inner-template)))
+
+  ;; Publish with the derived backend, then apply deterministic HTML-only
+  ;; adjustments to TOC structure and priority classes.
+  (defun my/org-publish-to-foldable-html (plist filename pub-dir)
+    "Publish FILENAME using the foldable Org HTML backend."
+    (let ((output
+           (org-publish-org-to
+            'my-org-html filename
+            (concat (when (> (length org-html-extension) 0) ".")
+                    (or (plist-get plist :html-extension)
+                        org-html-extension
+                        "html"))
+            plist pub-dir)))
+      (with-temp-buffer
+        (insert-file-contents output)
+        (let ((wrapped (my/org-html-colorize-priorities
+                        (my/org-html-wrap-toc (buffer-string)))))
+          (unless (equal wrapped (buffer-string))
+            (erase-buffer)
+            (insert wrapped)
+            (write-region nil nil output nil 'silent))))
+      output))
 
   (defun my/generate-img-projects ()
     "Generate publishing entries and names for all *-img directories under ~/org/work."
@@ -285,7 +415,7 @@
              :base-extension "org"
              :publishing-directory "~/work-dashboard/"
              :recursive t
-             :publishing-function org-html-publish-to-html
+             :publishing-function my/org-publish-to-foldable-html
              :headline-levels 4
              :auto-preamble t)
             ("org-presentation-files"
@@ -293,7 +423,7 @@
              :base-extension "org"
              :publishing-directory "~/work-dashboard/Presentations/"
              :recursive t
-             :publishing-function org-html-publish-to-html
+             :publishing-function my/org-publish-to-foldable-html
              :headline-levels 4
              :auto-preamble t)
             ("org-work-assets"
