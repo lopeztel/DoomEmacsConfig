@@ -790,9 +790,14 @@
 ;;NOTE Just making it look nicer
 (after! markdown-mode
   ;; Use Prettier for SPC c f and format-on-save.
-  (set-formatter! 'prettier :modes '(markdown-mode gfm-mode))
+  (set-formatter!
+   'prettier
+   '("prettier" "--stdin-filepath" filepath "--prose-wrap" "always")
+   :modes '(markdown-mode gfm-mode))
   (setq-hook! 'markdown-mode-hook +format-with 'prettier)
   (setq-hook! 'gfm-mode-hook +format-with 'prettier)
+  (add-hook 'markdown-mode-hook #'apheleia-mode)
+  (add-hook 'gfm-mode-hook #'apheleia-mode)
   (custom-set-faces
    '(markdown-header-face-1 ((t (:height 1.50 :weight bold))))
    '(markdown-header-face-2 ((t (:height 1.30 :weight bold))))
@@ -805,7 +810,8 @@
               (display-line-numbers-mode -1)
               (visual-line-mode 1)
               (variable-pitch-mode 1)
-              (setq-local visual-fill-column-width 100
+              (setq-local fill-column 80
+                          visual-fill-column-width 80
                           visual-fill-column-center-text t)
               (visual-fill-column-mode 1)))
   (add-hook 'markdown-mode-hook
