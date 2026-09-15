@@ -650,14 +650,16 @@
 (require 'ox-dnd)
 
 ;; MERMAID
-(require 'ob-mermaid)
-;; (setq ob-mermaid-cli-path "/usr/bin/mmdc")
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((mermaid . t)))
-
-(require 'mermaid-mode)
-;; (setq mermaid-mmdc-location "/usr/bin/mmdc")
+(after! mermaid-mode
+  (require 'ob-mermaid)
+  (setq ob-mermaid-cli-path (executable-find "mmdc"))
+  (when (eq system-type 'darwin)
+    (setf (alist-get :puppeteer-config-file
+                     org-babel-default-header-args:mermaid)
+          (expand-file-name "~/pupeteer-mmd.json")))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((mermaid . t))))
 
 ;; ORG-DOWNLOAD
 ;; NOTE: See https://emacs.stackexchange.com/questions/71100/pasting-images-from-clipboard-into-orgmode
