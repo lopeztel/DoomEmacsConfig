@@ -89,6 +89,13 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-nord-aurora)
 
+;; Emacs 31 makes gnus-group-news-low inherit from -low-empty. Doom themes
+;; defines the reverse inheritance, which creates a face cycle at startup.
+(when (eq system-type 'darwin)
+  (custom-set-faces
+   '(gnus-group-news-low-empty
+     ((t (:inherit gnus-group-mail-1-empty :weight normal))))))
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type `relative)
@@ -782,7 +789,11 @@
 ;;MARKDOWN
 ;;NOTE Just making it look nicer
 (after! markdown-mode
-(custom-set-faces
+  ;; Use Prettier for SPC c f and format-on-save.
+  (set-formatter! 'prettier :modes '(markdown-mode gfm-mode))
+  (setq-hook! 'markdown-mode-hook +format-with 'prettier)
+  (setq-hook! 'gfm-mode-hook +format-with 'prettier)
+  (custom-set-faces
    '(markdown-header-face-1 ((t (:height 1.50 :weight bold))))
    '(markdown-header-face-2 ((t (:height 1.30 :weight bold))))
    '(markdown-header-face-3 ((t (:height 1.18 :weight bold))))
@@ -794,7 +805,9 @@
               (display-line-numbers-mode -1)
               (visual-line-mode 1)
               (variable-pitch-mode 1)
-              (olivetti-mode 1)))
+              (setq-local visual-fill-column-width 100
+                          visual-fill-column-center-text t)
+              (visual-fill-column-mode 1)))
   (add-hook 'markdown-mode-hook
             #'markdown-toggle-markup-hiding))
 
